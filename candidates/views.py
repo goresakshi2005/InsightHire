@@ -6,6 +6,21 @@ from django.contrib.auth.views import LoginView
 from django.urls import reverse_lazy
 
 
+from django.shortcuts import get_object_or_404
+from django.http import FileResponse
+# from django.contrib.auth.decorators import login_required
+# from .models import CandidateProfile
+
+@login_required
+def download_resume(request, candidate_id):
+    candidate = get_object_or_404(CandidateProfile, id=candidate_id)
+    
+    if request.user == candidate.user or request.user.groups.filter(name="Interviewers").exists():
+        return FileResponse(candidate.resume.open(), as_attachment=True)
+    return HttpResponseForbidden("You don't have permission to download this file.")
+
+
+
 @login_required
 def candidate_dashboard(request):
     candidate_profile, created = CandidateProfile.objects.get_or_create(

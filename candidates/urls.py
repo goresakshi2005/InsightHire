@@ -7,5 +7,6 @@ urlpatterns = [
     path('signup/', candidate_signup, name='candidate_signup'),
     path('dashboard/', candidate_dashboard, name='candidate_dashboard'),
     path('logout/', LogoutView.as_view(next_page='interviewer_login'), name='interviewer_logout'),
+    path('download_resume/<int:candidate_id>/', download_resume, name='download_resume'),
 
 ]

@@ -86,19 +86,17 @@
                     </form>
                     
                     {% if candidate_profile.resume %}
-                    <div class="resume-info" style="margin-top: 1rem;">
-                        <p><i class="fas fa-check-circle"></i> Your resume is ready</p>
-                        <a href="{{ candidate_profile.resume.url }}">
-                            <i class="fas fa-download"></i> Download
-                        </a>
-                    </div>
-                    {% else %}
-                    <div class="no-resume" style="margin-top: 1rem;">
-                        <i class="fas fa-exclamation-circle" style="color: #9ca3af; font-size: 1.5rem; margin-bottom: 0.5rem;"></i>
-                        <p>You haven't uploaded a resume yet. Add your resume to start applying for positions.</p>
-                    </div>
+                        <div class="resume-info">
+                            <p><i class="fas fa-check-circle"></i> Your resume is ready</p>
+                            <a href="{{ candidate_profile.resume.url }}" download>
+                                <i class="fas fa-download"></i> Download Resume
+                            </a>
+                        </div>
+                    {% endif %}
+
                     {% endif %}
                 </div>
+                
                 
                 <!-- Interview Card -->
                 <div class="card">
