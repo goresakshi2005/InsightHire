@@ -4,26 +4,29 @@ from .forms import ResumeUploadForm, CandidateSignUpForm
 from .models import CandidateProfile
 from django.contrib.auth.views import LoginView
 from django.urls import reverse_lazy
-from django.http import HttpResponseForbidden
-
-
 
 from django.shortcuts import get_object_or_404
-from django.http import FileResponse
-# from django.contrib.auth.decorators import login_required
-# from .models import CandidateProfile
+from django.http import FileResponse, HttpResponse, HttpResponseForbidden
+
 
 @login_required
 def download_resume(request, candidate_id):
     candidate = get_object_or_404(CandidateProfile, id=candidate_id)
-    
-    if not candidate.resume:  # Check if resume exists
-        return HttpResponseForbidden("Resume not available.")
-    
-    if request.user == candidate.user or request.user.groups.filter(name="Interviewers").exists():
-        return FileResponse(candidate.resume.open(), as_attachment=True)
 
-    return HttpResponseForbidden("You don't have permission to download this file.")
+    # If no resume is uploaded, just return silently without any error
+    if not candidate.resume or not candidate.resume.name:
+        return redirect('candidate_dashboard')  # Redirect to dashboard (or any other page)
+
+    # Allow only candidate or interviewer to download
+    if request.user == candidate.user or request.user.groups.filter(name="Interviewers").exists():
+        try:
+            return FileResponse(candidate.resume.open(), as_attachment=True)
+        except Exception:
+            return redirect('candidate_dashboard')  # Redirect if file error occurs
+
+    return redirect('candidate_dashboard')  # Redirect unauthorized users silently
+
+
 
 
 @login_required
