@@ -1,6 +1,7 @@
 from django.urls import path
-from .views import CandidateLoginView, candidate_dashboard, candidate_signup
+from .views import CandidateLoginView, candidate_dashboard, candidate_signup, download_resume 
 from django.contrib.auth.views import LogoutView
+
 
 urlpatterns = [
     path('login/', CandidateLoginView.as_view(), name='candidate_login'),
