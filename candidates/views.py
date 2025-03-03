@@ -4,6 +4,8 @@ from .forms import ResumeUploadForm, CandidateSignUpForm
 from .models import CandidateProfile
 from django.contrib.auth.views import LoginView
 from django.urls import reverse_lazy
+from django.http import HttpResponseForbidden
+
 
 
 from django.shortcuts import get_object_or_404
@@ -15,10 +17,13 @@ from django.http import FileResponse
 def download_resume(request, candidate_id):
     candidate = get_object_or_404(CandidateProfile, id=candidate_id)
     
+    if not candidate.resume:  # Check if resume exists
+        return HttpResponseForbidden("Resume not available.")
+    
     if request.user == candidate.user or request.user.groups.filter(name="Interviewers").exists():
         return FileResponse(candidate.resume.open(), as_attachment=True)
-    return HttpResponseForbidden("You don't have permission to download this file.")
 
+    return HttpResponseForbidden("You don't have permission to download this file.")
 
 
 @login_required
